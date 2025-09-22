@@ -31,15 +31,15 @@ int main() {
 				printf("Volte Sempre!\n");
 				break;
 			case 1:
-				printf("Cadastrando...\n")
+				printf("Cadastrando...\n");
 				break;
 			case 2:
 				break;
 			case 3:
-				printf("Modificando...\n")
+				printf("Modificando...\n");
 				break;
 			case 4:
-				printf("Excluindo...\n")
+				printf("Excluindo...\n");
 				break;
 			
 		
