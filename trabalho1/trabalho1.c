@@ -10,10 +10,10 @@
 //  O aluno deve preencher seus dados abaixo, e implementar as questões do trabalho
 
 //  ----- Dados do Aluno -----
-//  Nome:
-//  email:
-//  Matrícula:
-//  Semestre:
+//  Nome: GUSTAVO TEIXEIRA GUIMARAES
+//  email:  gustavaotg@gmail.com
+//  Matrícula: 20251160017
+//  Semestre: 2
 
 //  Copyright © 2016 Renato Novais. All rights reserved.
 // Última atualização: 07/05/2021 - 19/08/2016 - 17/10/2025
@@ -92,16 +92,47 @@ int teste(int a)
 int q1(char data[])
 {
   int datavalida = 1;
-
+  
   //quebrar a string data em strings sDia, sMes, sAno
+  char sDia[3];
+  char sMes[3];
+  char sAno[5];
+  char* ptrData[3] = {sDia, sMes, sAno};
+  int indiceData = 0;
 
+  // Sub-indice
+  int subI = 0;
+  for (int i = 0; (data[i] != '\0') && (indiceData < 3) && ((subI > 2) && (indiceData < 2)); i++, subI++) {
+    if (data[i] == '/') {
+      // Verifica se separador não tem valores antes dele 
+      // SubI é como se fizesse a pergunta: Quantos caracteres li antes da barra?
+      if (subI == 0) {
+        datavalida = 0;
+        return datavalida;
+      }
+
+      *(ptrData[indiceData] + subI) = '\0';
+
+      // Quando voltar pro loop ele vai se corrigir pra 0 
+      subI = -1;
+
+      indiceData++;
+
+    } else {
+      *(ptrData[indiceData] + subI) = data[i];
+      subI++;
+    }
+  }
+  if (indiceData != 2) {
+    datavalida = 0;
+    return datavalida;
+  }
+  // Colocando a sentinela do ano
+  *(ptrData[indiceData] + subI) = '\0';
 
   //printf("%s\n", data);
 
-  if (datavalida)
-      return 1;
-  else
-      return 0;
+  return datavalida;
 }
 
 
