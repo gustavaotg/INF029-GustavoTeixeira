@@ -92,6 +92,8 @@ int teste(int a)
 int q1(char data[])
 {
   int datavalida = 1;
+
+  //printf("Q1: ");
   
   //quebrar a string data em strings sDia, sMes, sAno
   char sDia[3];
@@ -102,7 +104,8 @@ int q1(char data[])
 
   // Sub-indice
   int subI = 0;
-  for (int i = 0; (data[i] != '\0') && (indiceData < 3) && ((subI > 2) && (indiceData < 2)); i++, subI++) {
+  for (int i = 0; (data[i] != '\0') && (indiceData < 3) && !((subI > 2) && (indiceData < 2)); i++, subI++) {
+    //printf(".");
     if (data[i] == '/') {
       // Verifica se separador não tem valores antes dele 
       // SubI é como se fizesse a pergunta: Quantos caracteres li antes da barra?
@@ -120,15 +123,64 @@ int q1(char data[])
 
     } else {
       *(ptrData[indiceData] + subI) = data[i];
-      subI++;
     }
   }
+  //printf("(%i) -> SubI:%i | IndiceData:%i ||| ", ((subI >= 2) && (indiceData < 2)), subI, indiceData);
   if (indiceData != 2) {
     datavalida = 0;
     return datavalida;
   }
+
   // Colocando a sentinela do ano
   *(ptrData[indiceData] + subI) = '\0';
+  
+  //printf("(%s) (%s) (%s) ||| ", sDia, sMes, sAno);
+
+  int iDia, iMes, iAno;
+  iDia = atoi(sDia);
+  iMes = atoi(sMes);
+  iAno = atoi(sAno);
+
+  // Caso ano tenha 2 digitos ele será padronizado pra 4
+  if (iAno < 50) {
+    iAno += 2000;
+  } else if (iAno < 100) {
+    iAno += 1900;
+  }
+
+  // Garantindo que o mes está no intervalo [1; 12] (Coloquei  o "< 1" pois poderia receber -5 como um mês)
+  if ((iMes < 1) || (iMes > 12)) {
+    datavalida = 0;
+    return datavalida;
+  }
+
+  // Meses de 31 dias
+  if ((iMes == 1) || (iMes == 3) || (iMes == 5) || (iMes == 7) || (iMes == 8) || (iMes == 10) || (iMes == 12)) {
+    if ((iDia < 1) || (iDia > 31)) {
+      datavalida = 0;
+    }
+
+  // Fevereiro
+  } else if (iMes == 2) {
+    if ((iDia < 1) || (iDia > 28)) {
+      datavalida = 0;
+    }
+    if (iDia == 29) {
+      // Verificar ano bissexto (E a regra do centenario)
+      if (((iAno % 400) == 0) || ((iAno % 100) != 0 && (iAno % 4) == 0)) {
+        datavalida = 1;
+      }
+    }
+  
+  // Meses com 30 dias
+  } else {
+    if ((iDia < 1) || (iDia > 30)) {
+      datavalida = 0;
+    }
+  }
+
+
+
 
   //printf("%s\n", data);
 
@@ -153,7 +205,7 @@ int q1(char data[])
  */
 DiasMesesAnos q2(char datainicial[], char datafinal[])
 {
-
+    printf("Q2: ");
     //calcule os dados e armazene nas três variáveis a seguir
     DiasMesesAnos dma;
 
@@ -189,7 +241,26 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
  */
 int q3(char *texto, char c, int isCaseSensitive)
 {
-    int qtdOcorrencias = -1;
+  int qtdOcorrencias = 0;
+  
+  // printf("Q3:");
+  
+    int isCLetter = ('A' <= (c & 0xdf) && (c & 0xdf) <= 'Z');
+
+    // *(texto + i) é o caractere na i-ésima posição do texto
+    if (isCaseSensitive == 1 || isCLetter == 0) {
+      for (int i = 0; *(texto + i) != '\0'; i++) {
+        if (*(texto + i) == c) {
+          qtdOcorrencias++;
+        }
+      }
+    } else {
+      for (int i = 0; *(texto + i) != '\0'; i++) {
+        if ((*(texto + i) & 0xdf) == (c & 0xdf)) {
+          qtdOcorrencias++;
+        }
+      }
+    }
 
     return qtdOcorrencias;
 }

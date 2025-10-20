@@ -10,10 +10,10 @@
 //  O aluno deve preencher seus dados abaixo, e implementar as questões do trabalho
 
 //  ----- Dados do Aluno -----
-//  Nome:
-//  email:
-//  Matrícula:
-//  Semestre:
+//  Nome: GUSTAVO TEIXEIRA GUIMARAES
+//  email:  gustavaotg@gmail.com
+//  Matrícula: 20251160017
+//  Semestre: 2
 
 //  Copyright © 2016 Renato Novais. All rights reserved.
 // Última atualização: 07/05/2021
