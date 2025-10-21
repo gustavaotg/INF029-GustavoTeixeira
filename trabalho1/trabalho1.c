@@ -76,6 +76,69 @@ int teste(int a)
     return val;
 }
 
+int conversorData(char data[], int* dia, int* mes, int* ano) {
+  
+  if ((dia == NULL) || (mes == NULL) || (ano == NULL)) {
+    return 0;
+  }
+
+  //quebrar a string data em strings sDia, sMes, sAno
+  char sDia[3];
+  char sMes[3];
+  char sAno[5];
+  char* ptrData[3] = {sDia, sMes, sAno};
+  int indiceData = 0;
+
+  // Sub-indice
+  int subI = 0;
+  for (int i = 0; (data[i] != '\0') && (indiceData < 3) && (subI < 4)  && !((subI > 2) && (indiceData < 2)); i++, subI++) {
+    //printf(".");
+    if (data[i] == '/') {
+      // Verifica se separador não tem valores antes dele 
+      // SubI é como se fizesse a pergunta: Quantos caracteres li antes da barra?
+      if (subI == 0) {
+        return 0;
+      }
+
+      *(ptrData[indiceData] + subI) = '\0';
+
+      // Quando voltar pro loop ele vai se corrigir pra 0 
+      subI = -1;
+
+      indiceData++;
+
+    } else {
+      *(ptrData[indiceData] + subI) = data[i];
+    }
+  }
+  //printf("(%i) -> SubI:%i | IndiceData:%i ||| ", ((subI >= 2) && (indiceData < 2)), subI, indiceData);
+  if (indiceData != 2) {
+    return 0;
+  }
+
+  // Colocando a sentinela do ano
+  *(ptrData[indiceData] + subI) = '\0';
+  
+  //printf("(%s) (%s) (%s) ||| ", sDia, sMes, sAno);
+
+  *dia = atoi(sDia);
+  *mes = atoi(sMes);
+  *ano = atoi(sAno);
+
+  if (*ano < 0 || (*mes <= 0) || (*dia <= 0)) {
+    return 0;
+  }
+
+  // Caso ano tenha 2 digitos ele será padronizado pra 4
+  if (*ano < 50) {
+    *ano += 2000;
+  } else if (*ano < 100) {
+    *ano += 1900;
+  }
+
+  return 1;
+}
+
 /*
  Q1 = validar data
 @objetivo
@@ -104,7 +167,7 @@ int q1(char data[])
 
   // Sub-indice
   int subI = 0;
-  for (int i = 0; (data[i] != '\0') && (indiceData < 3) && !((subI > 2) && (indiceData < 2)); i++, subI++) {
+  for (int i = 0; (data[i] != '\0') && (indiceData < 3) && (subI < 4)  && !((subI > 2) && (indiceData < 2)); i++, subI++) {
     //printf(".");
     if (data[i] == '/') {
       // Verifica se separador não tem valores antes dele 
@@ -217,8 +280,8 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
       return dma;
     }else{
       //verifique se a data final não é menor que a data inicial
-      
       //calcule a distancia entre as datas
+      //Para verificar se a data final 
 
 
       //se tudo der certo
