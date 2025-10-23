@@ -308,7 +308,7 @@ int q3(char *texto, char c, int isCaseSensitive)
 {
   int qtdOcorrencias = 0;
   
-  // printf("Q3:");
+  //printf("Q3:");
   
     int isCLetter = ('A' <= (c & 0xdf) && (c & 0xdf) <= 'Z');
 
@@ -345,9 +345,33 @@ int q3(char *texto, char c, int isCaseSensitive)
         O retorno da função, n, nesse caso seria 1;
 
  */
-int q4(char *strTexto, char *strBusca, int posicoes[30])
-{
-    int qtdOcorrencias = -1;
+int q4(char *strTexto, char *strBusca, int posicoes[30]) {
+    int qtdOcorrencias = 0;
+    // Caracteres acentuados contam por 2, todos viram 'numeros negativos' 
+    int qtdAcentos2 = 0;
+
+    //printf("Q4: ");
+
+    if (strBusca == NULL) {
+      return qtdOcorrencias;
+    }
+
+    for (int i = 0; strTexto[i] != '\0'; i++) {
+      if (strTexto[i] < 0) {
+        qtdAcentos2++;
+      }
+      for (int j = 0; 1; j++) {
+        if (strBusca[j] == '\0') {
+          posicoes[qtdOcorrencias*2] = i + 1 - (qtdAcentos2 / 2);
+          posicoes[(qtdOcorrencias*2)+1] = i + j - (qtdAcentos2 / 2);
+          //printf("|%i|[%i]", posicoes[qtdOcorrencias*2], posicoes[(qtdOcorrencias*2)+1]);
+          qtdOcorrencias += 1;
+          break;
+        } else if (strTexto[i + j] != strBusca[j]) {
+          break;
+        }
+      }
+    }
 
     return qtdOcorrencias;
 }
@@ -363,7 +387,7 @@ int q4(char *strTexto, char *strBusca, int posicoes[30])
  */
 
 int q5(int num) {
-    printf("Q5: ");
+    //printf("Q5: ");
     int qtdDigitos = 1;
     for (int numcpy = num; numcpy > 0; qtdDigitos = qtdDigitos*10, numcpy = numcpy/10) {}
     
