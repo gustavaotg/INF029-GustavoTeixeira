@@ -409,9 +409,31 @@ int q5(int num) {
     Quantidade de vezes que número de busca ocorre em número base
  */
 
-int q6(int numerobase, int numerobusca)
-{
-    int qtdOcorrencias;
+int q6(int numerobase, int numerobusca) {
+    int qtdOcorrencias = 0;
+
+    // 10 elevado a quantidade de digitos no numero da busca
+    int qtdDigitosBusca = 1;
+    for (int numcpy = numerobusca; numcpy > 0; qtdDigitosBusca = qtdDigitosBusca*10, numcpy = numcpy/10) {}
+
+    // 10 elevado a quantidade de digitos no numero base
+    int qtdDigitosBase = 1;
+    for (int numcpy = numerobase; numcpy > 0; qtdDigitosBase = qtdDigitosBase*10, numcpy = numcpy/10) {}
+    
+    // Caso a busca seja igual a 0
+    if (qtdDigitosBusca == 1) {
+        qtdDigitosBusca = 10;
+    }
+    
+    //printf("qtdDigitosBase: %i \nqtdDigitosBusca: %i\n", qtdDigitosBase, qtdDigitosBusca);
+    
+    // Multipliquei por 10 o digitobase pois o loop estava repentindo um a menos que o necessário
+    for (int i = 1; i < qtdDigitosBase*10/qtdDigitosBusca; i = i*10) {
+        if (((numerobase/i) % qtdDigitosBusca) == numerobusca) {
+            qtdOcorrencias++;
+        }
+    }
+    
     return qtdOcorrencias;
 }
 
@@ -427,8 +449,28 @@ int q6(int numerobase, int numerobusca)
 
  int q7(char matriz[8][10], char palavra[5])
  {
-     int achou;
-     return achou;
+    int achou = 0;
+    // Meio estranho que palavra[] não tem a sentinela '\0'
+    int qtdLinha = 8;
+    int qtdColuna = 10;
+    int tamPalavra = 5;
+
+    // Verificar horizontal e vertical
+    // Diagonal = combinacao de horizontal e vertical
+    // Exemplo: Se eu não puder ir pra cima eu certamente não posso ir diagonalmente pra cima também.
+
+    for (int i = 0; i < qtdLinha; i++) {
+      for (int j = 0; j < qtdColuna; j++) {
+        if (matriz[i][j] == palavra[0]) {
+          // TODO
+          achou = 1;
+          break;
+        }
+      }
+    }
+    
+
+    return achou;
  }
 
 
