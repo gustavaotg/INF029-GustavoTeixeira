@@ -280,9 +280,11 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
       return dma;
     }else{
       //verifique se a data final não é menor que a data inicial
+      //Para verificar se a data final é maior que a inicial é so verificar se o resultado é negativo 
+      
       //calcule a distancia entre as datas
-      //Para verificar se a data final 
 
+      
 
       //se tudo der certo
       dma.retorno = 1;
@@ -360,10 +362,17 @@ int q4(char *strTexto, char *strBusca, int posicoes[30])
     Número invertido
  */
 
-int q5(int num)
-{
-
-    return num;
+int q5(int num) {
+    printf("Q5: ");
+    int qtdDigitos = 1;
+    for (int numcpy = num; numcpy > 0; qtdDigitos = qtdDigitos*10, numcpy = numcpy/10) {}
+    
+    int numInv = 0;
+    for (int i = 1; i < qtdDigitos; i = i*10) {
+        numInv += ((num/i) % 10) * (qtdDigitos / i/10);
+    }
+    
+    return numInv;
 }
 
 /*
