@@ -459,16 +459,34 @@ int q6(int numerobase, int numerobusca) {
     // Diagonal = combinacao de horizontal e vertical
     // Exemplo: Se eu não puder ir pra cima eu certamente não posso ir diagonalmente pra cima também.
 
+    // i = linha ; j = coluna
     for (int i = 0; i < qtdLinha; i++) {
       for (int j = 0; j < qtdColuna; j++) {
         if (matriz[i][j] == palavra[0]) {
-          // TODO
-          achou = 1;
-          break;
+          // Coloquei -1 no tamanho da palavra pois estou comparando com um indice
+          int praCima = (i >= tamPalavra - 1)? 1 : 0; 
+          // Não coloquei o -1 aqui pois estou comparando com o proprio tamanho
+          int praBaixo = (qtdLinha - i >= tamPalavra)? 1 : 0;
+          int praEsq = (j >= tamPalavra - 1)? 1 : 0;
+          int praDir = (qtdColuna - j >= tamPalavra)? 1 : 0;
+          //printf("\n[%i;%i]{%i|%i|%i|%i} ", i, j, praCima, praBaixo, praEsq, praDir);
+          for (int vertical = -praCima; vertical <= praBaixo; vertical++) {
+            for (int horizontal = -praEsq; horizontal <= praDir; horizontal++) {
+              if (vertical == 0 && horizontal == 0) {
+                continue;
+              }
+              for (int k = 1; matriz[i + (k*vertical)][j + (k*horizontal)] == palavra[k]; k++) {
+                if (k + 1 == tamPalavra) {
+                  achou = 1;
+                  goto pararProcura; // usar break não sairia dos loops aninhados
+                }
+              }
+            } 
+          }
         }
       }
     }
-    
+    pararProcura:
 
     return achou;
  }
