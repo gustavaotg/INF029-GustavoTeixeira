@@ -268,7 +268,8 @@ int q1(char data[])
  */
 DiasMesesAnos q2(char datainicial[], char datafinal[])
 {
-    printf("Q2: "); // TODO!!! Q2 PASSA NOS TESTES MAS NÃO ESTÁ 100% FUNCIONAL!
+    //printf("Q2: "); 
+    // TODO!!! Q2 PASSA NOS TESTES MAS NÃO ESTÁ 100% FUNCIONAL!
     //calcule os dados e armazene nas três variáveis a seguir
     DiasMesesAnos dma;
 
