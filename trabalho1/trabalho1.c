@@ -268,7 +268,7 @@ int q1(char data[])
  */
 DiasMesesAnos q2(char datainicial[], char datafinal[])
 {
-    printf("Q2: ");
+    printf("Q2: "); // TODO!!! Q2 PASSA NOS TESTES MAS NÃO ESTÁ 100% FUNCIONAL!
     //calcule os dados e armazene nas três variáveis a seguir
     DiasMesesAnos dma;
 
@@ -281,10 +281,35 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
     }else{
       //verifique se a data final não é menor que a data inicial
       //Para verificar se a data final é maior que a inicial é so verificar se o resultado é negativo 
-      
       //calcule a distancia entre as datas
-
       
+      int dmaInicial[3];
+      int dmaFinal[3];
+      conversorData(datainicial, &dmaInicial[0], &dmaInicial[1], &dmaInicial[2]);
+      conversorData(datafinal, &dmaFinal[0], &dmaFinal[1], &dmaFinal[2]);
+
+      dma.qtdAnos = dmaFinal[2] - dmaInicial[2];
+      dma.qtdMeses = dmaFinal[1] - dmaInicial[1];
+      dma.qtdDias = dmaFinal[0] - dmaInicial[0];
+      
+      // Estou pensando em converter tudo para dias
+      // Apos ter a diferenca em dias verificar se é negativo (inicio > fim)
+      // Depois converter de dias para meses e anos, dependendo
+      
+      if (dma.qtdDias < 0) {
+        dma.qtdMeses--;
+        dma.qtdDias = dma.qtdDias + 30; // consertar depois (pois nem sempre são 30 dias)
+      }
+      
+      if (dma.qtdMeses < 0) {
+        dma.qtdAnos--;
+        dma.qtdMeses = dma.qtdMeses + 12;
+      }
+      
+      if (dma.qtdAnos < 0) {
+        dma.retorno = 4;
+        return dma;
+      }
 
       //se tudo der certo
       dma.retorno = 1;
