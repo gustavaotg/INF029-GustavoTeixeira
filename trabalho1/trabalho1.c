@@ -156,7 +156,7 @@ int q1(char data[])
 {
   int datavalida = 1;
 
-  printf("Q1: ");
+  //printf("Q1: ");
   
   //quebrar a string data em strings sDia, sMes, sAno
   char sDia[3];
@@ -268,7 +268,7 @@ int q1(char data[])
  */
 DiasMesesAnos q2(char datainicial[], char datafinal[])
 {
-    printf("Q2: "); 
+    //printf("Q2: "); 
     // TODO!!! Q2 PASSA NOS TESTES MAS NÃO ESTÁ 100% FUNCIONAL!
     //calcule os dados e armazene nas três variáveis a seguir
     DiasMesesAnos dma;
@@ -328,7 +328,7 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
         return dma;
       }
       
-      printf("(%i)(%i)(%i)", dma.qtdDias, dma.qtdMeses, dma.qtdAnos);
+      //printf("(%i)(%i)(%i)", dma.qtdDias, dma.qtdMeses, dma.qtdAnos);
       //se tudo der certo
       dma.retorno = 1;
       return dma;
@@ -351,7 +351,7 @@ int q3(char *texto, char c, int isCaseSensitive)
 {
   int qtdOcorrencias = 0;
   
-  printf("Q3:");
+  //printf("Q3:");
   
     int isCLetter = ('A' <= (c & 0xdf) && (c & 0xdf) <= 'Z');
 
@@ -389,18 +389,20 @@ int q3(char *texto, char c, int isCaseSensitive)
 
  */
 int q4(char *strTexto, char *strBusca, int posicoes[30]) {
-    printf("Q4: ");
+    //printf("Q4: ");
     
     int qtdOcorrencias = 0;
     // Caracteres acentuados contam por 2, todos viram 'numeros negativos' 
     int qtdAcentos2 = 0;
 
 
-    if (strBusca == NULL) {
+    if (strBusca == NULL || strBusca[0] == '\0') {
       return qtdOcorrencias;
     }
 
+    //printf("[");
     for (int i = 0; strTexto[i] != '\0'; i++) {
+      //printf("%i", i);
       if (strTexto[i] < 0) {
         qtdAcentos2++;
       }
@@ -410,12 +412,15 @@ int q4(char *strTexto, char *strBusca, int posicoes[30]) {
           posicoes[(qtdOcorrencias*2)+1] = i + j - (qtdAcentos2 / 2);
           //printf("|%i|[%i]", posicoes[qtdOcorrencias*2], posicoes[(qtdOcorrencias*2)+1]);
           qtdOcorrencias += 1;
+          // Pular a string já encontrada
+          i += j - 1;
           break;
         } else if (strTexto[i + j] != strBusca[j]) {
           break;
         }
       }
     }
+    //printf("]");
 
     return qtdOcorrencias;
 }
@@ -431,7 +436,7 @@ int q4(char *strTexto, char *strBusca, int posicoes[30]) {
  */
 
 int q5(int num) {
-    printf("Q5: ");
+    //printf("Q5: ");
     int qtdDigitos = 1;
     for (int numcpy = num; numcpy > 0; qtdDigitos = qtdDigitos*10, numcpy = numcpy/10) {}
     
@@ -454,7 +459,7 @@ int q5(int num) {
  */
 
 int q6(int numerobase, int numerobusca) {
-    printf("Q6: ");
+    //printf("Q6: ");
     int qtdOcorrencias = 0;
 
     // 10 elevado a quantidade de digitos no numero da busca
@@ -476,9 +481,12 @@ int q6(int numerobase, int numerobusca) {
     for (int i = 1; i < qtdDigitosBase*10/qtdDigitosBusca; i = i*10) {
         if (((numerobase/i) % qtdDigitosBusca) == numerobusca) {
             qtdOcorrencias++;
+            // Pula o numero já encontrado
+            i *= qtdDigitosBusca/10;
         }
     }
     
+    //printf("[%i](%i)", numerobusca, qtdOcorrencias);
     return qtdOcorrencias;
 }
 
@@ -494,7 +502,7 @@ int q6(int numerobase, int numerobusca) {
 
  int q7(char matriz[8][10], char palavra[5])
  {
-    printf("Q7: ");
+    //printf("Q7: ");
     int achou = 0;
     // Meio estranho que palavra[] não tem a sentinela '\0'
     int qtdLinha = 8;
