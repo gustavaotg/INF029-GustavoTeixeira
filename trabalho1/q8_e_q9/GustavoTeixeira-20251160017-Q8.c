@@ -24,7 +24,7 @@ void mostrarTabuleiro(Tabuleiro);
 void fazerJogada(Tabuleiro*);
 
 // retorna 0 se não tiver acabado o jogo, 1 se 'X' ganhar e 2 se 'O' ganhar
-int gameOver(Tabuleiro*);
+int gameOver(Tabuleiro);
 
 // retorna 0 se for a vez de 'X' e 1 se for de 'O'
 // A verificação é feita a partir da quantidade de espaços vazios
@@ -36,11 +36,11 @@ int main()
     Tabuleiro tabuleiro;
     iniciarTabuleiro(&tabuleiro);
 
-    for(int nJogada = 0; (gameOver(&tabuleiro)) == 0 && nJogada < tabuleiro.tamanho; nJogada++) {
+    for(int nJogada = 0; (gameOver(tabuleiro)) == 0 && nJogada < tabuleiro.tamanho; nJogada++) {
         fazerJogada(&tabuleiro);
     }
     mostrarTabuleiro(tabuleiro);
-    int vencedor = gameOver(&tabuleiro);
+    int vencedor = gameOver(tabuleiro);
 
     if (vencedor) {
         printf("O jogador %c venceu!\n", tabuleiro.jogador[vencedor-1]);
@@ -49,6 +49,7 @@ int main()
     }
     return 0;
 }
+
 
 void iniciarTabuleiro(Tabuleiro* tabuleiro) {
     tabuleiro->lado = LADO_TABULEIRO;
@@ -63,6 +64,7 @@ void iniciarTabuleiro(Tabuleiro* tabuleiro) {
     }
     return;
 }
+
 
 void mostrarTabuleiro(Tabuleiro tabuleiro) {
     for (int i = -1; i < tabuleiro.lado; i++) {
@@ -134,7 +136,33 @@ int jogadorAtual(Tabuleiro tabuleiro) {
     return (qtdNVazio % 2);
 }
 
-int gameOver(Tabuleiro* tabuleiro) {
-    char* verde = "\033[32m";
+
+int gameOver(Tabuleiro tabuleiro) {
+    // direção a ser verificada
+    char verifLinha[tabuleiro.lado];
+
+    for (int i = 0; i < tabuleiro.lado; i++) {
+        // Verificando linhas
+        if (tabuleiro.tabuleiro[i][0] != tabuleiro.vazio) {
+            if (tabuleiro.tabuleiro[i][0] == tabuleiro.tabuleiro[i][1] && tabuleiro.tabuleiro[i][0] == tabuleiro.tabuleiro[i][2]) {
+                // Se for 'O' a comparação retornará 1, senão retornará 0. Após a comparação é adicionado 1
+                return (tabuleiro.tabuleiro[i][0] == 'O') + 1;
+            }
+        }
+        // Verificando colunas
+        if (tabuleiro.tabuleiro[0][i] != tabuleiro.vazio) {
+            if (tabuleiro.tabuleiro[0][i] == tabuleiro.tabuleiro[1][i] && tabuleiro.tabuleiro[0][i] == tabuleiro.tabuleiro[2][i]) {
+                return (tabuleiro.tabuleiro[0][i] == 'O') + 1;
+            }
+        }
+    }
+    // Verificando diagonais (elas precisam do meio)
+    if (tabuleiro.tabuleiro[1][1] != tabuleiro.vazio) {
+        if (tabuleiro.tabuleiro[0][0] == tabuleiro.tabuleiro[1][1] && tabuleiro.tabuleiro[0][0] == tabuleiro.tabuleiro[2][2]) {
+            return (tabuleiro.tabuleiro[0][0] == 'O') + 1;
+        } else if (tabuleiro.tabuleiro[0][2] == tabuleiro.tabuleiro[1][1] && tabuleiro.tabuleiro[0][2] == tabuleiro.tabuleiro[2][0]) {
+            return (tabuleiro.tabuleiro[0][2] == 'O') + 1;
+        }
+    }
     return 0;
 }
