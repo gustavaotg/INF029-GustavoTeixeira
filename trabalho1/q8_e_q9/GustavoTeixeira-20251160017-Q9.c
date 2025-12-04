@@ -16,11 +16,12 @@ typedef struct {
     int tamanho;
     char valores[3]; // X = tiro invalido; O = acertou alvo; N = navio posicionado;
     char vazio;
+    int jogador;
 } Tabuleiro;
 
 
 // Cria a string do tabuleiro inicial
-void iniciarTabuleiro(Tabuleiro*);
+void iniciarTabuleiro(Tabuleiro*, int);
 
 // imprime o tabuleiro na tela
 void mostrarTabuleiro(Tabuleiro);
@@ -29,11 +30,11 @@ void mostrarTabuleiro(Tabuleiro);
 void limparTela();
 
 // faz um menu para o jogador atual, as ações possíveis serão:
-//      2.Ver próprio tabuleiro
-//      3.Fazer uma jogada (isso irá, consequentemente, imprimir o tabuleiro do oponente com as jogadas já feitas)
+//      1.Ver próprio tabuleiro
+//      2.Fazer uma jogada (isso irá, consequentemente, imprimir o tabuleiro do oponente com as jogadas já feitas)
 void menuJogador(Tabuleiro*, int, int);
 
-// Pergunta ao jogador onde quer colocar os navios
+// Pergunta ao jogador onde ele quer colocar os navios
 void colocarNavios(Tabuleiro*);
 
 // Verifica se existe somente 1 jogador que ainda tem navios
@@ -44,7 +45,7 @@ int main() {
     // tabuleiros dos jogadores
     Tabuleiro tabuleiros[QTDJOGADORES];
     for (int i = 0; i < QTDJOGADORES; i++) {
-        iniciarTabuleiro(&(tabuleiros[i])); // inicia tabuleiro do jogador i
+        iniciarTabuleiro(&(tabuleiros[i]), i + 1); // inicia tabuleiro do jogador i
         colocarNavios(&(tabuleiros[i]));
     }
     
@@ -56,13 +57,14 @@ int main() {
 }
 
 
-void iniciarTabuleiro(Tabuleiro* tabuleiro) {
+void iniciarTabuleiro(Tabuleiro* tabuleiro, int nJog) {
     tabuleiro->lado = LADO_TABULEIRO;
     tabuleiro->tamanho = QTDCELULAS;
     tabuleiro->valores[0] = 'X';
     tabuleiro->valores[1] = 'O';
     tabuleiro->valores[2] = 'N';
     tabuleiro->vazio = VAZIO;
+    tabuleiro->jogador = nJog;
     for (int i = 0; i < tabuleiro->lado; i++) {
         for (int j = 0; j < tabuleiro->lado; j++) {
             tabuleiro->tabuleiro[i][j] = tabuleiro->vazio;
@@ -79,7 +81,7 @@ void mostrarTabuleiro(Tabuleiro tabuleiro) {
                 if (j == -1) {
                     printf("    ");
                 } else {
-                    printf("%i   ", j + 1);
+                    printf("%4i", j + 1);
                 }
                 continue;
             } else if (j == -1) {
@@ -103,6 +105,8 @@ void mostrarTabuleiro(Tabuleiro tabuleiro) {
 
 void menuJogador(Tabuleiro*, int, int) {
     
+    
+    return;
 }
 
 
@@ -122,4 +126,16 @@ void limparTela() {
     //return;   
 }
 
+void colocarNavios(Tabuleiro* tabuleiro) {
+    mostrarTabuleiro(*tabuleiro);
+    // TAM: 4; QTD: 1 
+    // TAM: 3; QTD: 1 
+    // TAM: 1; QTD: 3 
+    
+    colocarNavioTamQtd(tabuleiro, 4, 1);
+    colocarNavioTamQtd(tabuleiro, 3, 1);
+    colocarNavioTamQtd(tabuleiro, 1, 3);
 
+
+    return;
+}
