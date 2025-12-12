@@ -4,7 +4,13 @@
 
 #include "trabalho2.h"
 
-int vetorPrincipal[TAM];
+int* vetorPrincipal[TAM];
+
+// retorno: POSICAO_INVALIDA, SUCESSO
+int ehPosicaoValida(int);
+// retorno: JA_TEM_ESTRUTURA_AUXILIAR, SEM_ESTRUTURA_AUXILIAR
+int temEstruturaAuxiliar(int);
+
 
 /*
 Objetivo: criar estrutura auxiliar na posição 'posicao'.
@@ -19,19 +25,30 @@ Rertono (int)
 */
 int criarEstruturaAuxiliar(int posicao, int tamanho)
 {
-
     int retorno = 0;
-    // a posicao pode já existir estrutura auxiliar
-    retorno = JA_TEM_ESTRUTURA_AUXILIAR;
-    // se posição é um valor válido {entre 1 e 10}
-    retorno = POSICAO_INVALIDA;
-    // o tamanho ser muito grande
-    retorno = SEM_ESPACO_DE_MEMORIA;
-    // o tamanho nao pode ser menor que 1
-    retorno = TAMANHO_INVALIDO;
-    // deu tudo certo, crie
-    retorno = SUCESSO;
-
+    
+    // MUDEI A ORDEM DAS VERIFICAÇÕES 
+    //if (posicao < 1 || posicao > 10) {
+    if (ehPosicaoValida(posicao) == POSICAO_INVALIDA) {
+        // se posição é um valor válido {entre 1 e 10}
+        retorno = POSICAO_INVALIDA;
+    } else if (temEstruturaAuxiliar(posicao) == JA_TEM_ESTRUTURA_AUXILIAR) {
+        // a posicao pode já existir estrutura auxiliar
+        retorno = JA_TEM_ESTRUTURA_AUXILIAR;
+    } else if (tamanho < 1) {
+        // o tamanho nao pode ser menor que 1
+        retorno = TAMANHO_INVALIDO;
+    } else {
+        vetorPrincipal[posicao - 1] = (int *) malloc(tamanho * sizeof(int));
+        if (vetorPrincipal[posicao - 1] == NULL) {
+            // o tamanho ser muito grande
+            retorno = SEM_ESPACO_DE_MEMORIA;
+        } else {
+            // deu tudo certo, crie
+            retorno = SUCESSO;
+        }
+    }
+    //printf("[%i]", retorno);
     return retorno;
 }
 
@@ -47,9 +64,9 @@ CONSTANTES
 int inserirNumeroEmEstrutura(int posicao, int valor)
 {
     int retorno = 0;
-    int existeEstruturaAuxiliar = 0;
+    int existeEstruturaAuxiliar = temEstruturaAuxiliar(posicao) == JA_TEM_ESTRUTURA_AUXILIAR;
     int temEspaco = 0;
-    int posicao_invalida = 0;
+    int posicao_invalida = !(ehPosicaoValida(posicao) == POSICAO_INVALIDA);
 
     if (posicao_invalida)
         retorno = POSICAO_INVALIDA;
@@ -265,6 +282,10 @@ Objetivo: inicializa o programa. deve ser chamado ao inicio do programa
 
 void inicializar()
 {
+    //printf("(INICIALIZAR CHAMADO)\n");
+    for (int i = 0; i < 10; i++) {
+        vetorPrincipal[i] = NULL;
+    } 
 }
 
 /*
@@ -275,4 +296,18 @@ para poder liberar todos os espaços de memória das estruturas auxiliares.
 
 void finalizar()
 {
+    //printf("(FINALIZAR CHAMADO)\n");
+    for (int i = 0; i < 10; i++) {
+        free(vetorPrincipal[i]);
+        vetorPrincipal[i] = NULL;
+    }
+}
+
+int temEstruturaAuxiliar(int posicao) {
+    if (vetorPrincipal[posicao - 1] != NULL) {
+        return JA_TEM_ESTRUTURA_AUXILIAR;
+    } else {
+        return SEM_ESTRUTURA_AUXILIAR;
+    }
+    
 }
