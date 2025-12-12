@@ -4,12 +4,17 @@
 
 #include "trabalho2.h"
 
-int* vetorPrincipal[TAM];
+typedef struct {
+    int* p;
+    int tam;
+    int qtd;
+} item;
 
-// retorno: POSICAO_INVALIDA, SUCESSO
+item vetorPrincipal[TAM];
+
 int ehPosicaoValida(int);
-// retorno: JA_TEM_ESTRUTURA_AUXILIAR, SEM_ESTRUTURA_AUXILIAR
 int temEstruturaAuxiliar(int);
+int temEspacoEstruturaAux(int);
 
 
 /*
@@ -26,9 +31,6 @@ Rertono (int)
 int criarEstruturaAuxiliar(int posicao, int tamanho)
 {
     int retorno = 0;
-    
-    // MUDEI A ORDEM DAS VERIFICAÇÕES 
-    //if (posicao < 1 || posicao > 10) {
     if (ehPosicaoValida(posicao) == POSICAO_INVALIDA) {
         // se posição é um valor válido {entre 1 e 10}
         retorno = POSICAO_INVALIDA;
@@ -39,16 +41,17 @@ int criarEstruturaAuxiliar(int posicao, int tamanho)
         // o tamanho nao pode ser menor que 1
         retorno = TAMANHO_INVALIDO;
     } else {
-        vetorPrincipal[posicao - 1] = (int *) malloc(tamanho * sizeof(int));
-        if (vetorPrincipal[posicao - 1] == NULL) {
+        vetorPrincipal[posicao - 1].p = malloc((tamanho) * sizeof(int));
+        if (vetorPrincipal[posicao - 1].p == NULL) {
             // o tamanho ser muito grande
             retorno = SEM_ESPACO_DE_MEMORIA;
         } else {
             // deu tudo certo, crie
+            vetorPrincipal[posicao - 1].tam = tamanho;
+            vetorPrincipal[posicao - 1].qtd = 0;
             retorno = SUCESSO;
         }
     }
-    //printf("[%i]", retorno);
     return retorno;
 }
 
@@ -65,8 +68,8 @@ int inserirNumeroEmEstrutura(int posicao, int valor)
 {
     int retorno = 0;
     int existeEstruturaAuxiliar = temEstruturaAuxiliar(posicao) == JA_TEM_ESTRUTURA_AUXILIAR;
-    int temEspaco = 0;
-    int posicao_invalida = !(ehPosicaoValida(posicao) == POSICAO_INVALIDA);
+    int temEspaco = temEspacoEstruturaAux(posicao) == SUCESSO;
+    int posicao_invalida = ehPosicaoValida(posicao) == POSICAO_INVALIDA;
 
     if (posicao_invalida)
         retorno = POSICAO_INVALIDA;
@@ -78,6 +81,8 @@ int inserirNumeroEmEstrutura(int posicao, int valor)
             if (temEspaco)
             {
                 //insere
+                vetorPrincipal[posicao - 1].p[vetorPrincipal[posicao - 1].qtd] = valor;
+                vetorPrincipal[posicao - 1].qtd++;
                 retorno = SUCESSO;
             }
             else
@@ -107,7 +112,35 @@ Rertono (int)
 */
 int excluirNumeroDoFinaldaEstrutura(int posicao)
 {
-    int retorno = SUCESSO;
+    int retorno = 0;
+    int existeEstruturaAuxiliar = temEstruturaAuxiliar(posicao) == JA_TEM_ESTRUTURA_AUXILIAR;
+    int temElemento = vetorPrincipal[posicao - 1].qtd;
+    int posicao_invalida = ehPosicaoValida(posicao) == POSICAO_INVALIDA;
+
+    if (posicao_invalida)
+        retorno = POSICAO_INVALIDA;
+    else
+    {
+        // testar se existe a estrutura auxiliar
+        if (existeEstruturaAuxiliar)
+        {
+            if (temElemento)
+            {
+                //insere
+                vetorPrincipal[posicao - 1].qtd--;
+                retorno = SUCESSO;
+            }
+            else
+            {
+                retorno = ESTRUTURA_AUXILIAR_VAZIA;
+            }
+        }
+        else
+        {
+            retorno = SEM_ESTRUTURA_AUXILIAR;
+        }
+    }
+
     return retorno;
 }
 
@@ -126,7 +159,49 @@ Rertono (int)
 */
 int excluirNumeroEspecificoDeEstrutura(int posicao, int valor)
 {
-    int retorno = SUCESSO;
+    int retorno = 0;
+    int existeEstruturaAuxiliar = temEstruturaAuxiliar(posicao) == JA_TEM_ESTRUTURA_AUXILIAR;
+    int temElemento = vetorPrincipal[posicao - 1].qtd;
+    int posicao_invalida = ehPosicaoValida(posicao) == POSICAO_INVALIDA;
+    
+    if (posicao_invalida)
+        retorno = POSICAO_INVALIDA;
+    else
+    {
+        // testar se existe a estrutura auxiliar
+        if (existeEstruturaAuxiliar)
+        {
+            if (temElemento)
+            {
+                int qtd = vetorPrincipal[posicao - 1].qtd;
+                int achou = 0;
+                // percorre a lista auxiliar toda. Caso, em algum momento, ache o número, ela vai passar a substituir o numero especifico pelo próximo
+                for (int i = 0; i < qtd; i++) {
+                    if (achou) {
+                        // Ele tecnicamente está no "próximo" número, e está reescrevendo o numero anterior
+                        vetorPrincipal[posicao - 1].p[i - 1] = vetorPrincipal[posicao - 1].p[i];
+                    } else if (vetorPrincipal[posicao - 1].p[i] == valor) {
+                        achou = 1;
+                    }
+                }
+                if (achou) {
+                    vetorPrincipal[posicao - 1].qtd--;
+                    retorno = SUCESSO;
+                } else {
+                    retorno = NUMERO_INEXISTENTE;
+                }
+            }
+            else
+            {
+                retorno = ESTRUTURA_AUXILIAR_VAZIA;
+            }
+        }
+        else
+        {
+            retorno = SEM_ESTRUTURA_AUXILIAR;
+        }
+    }
+
     return retorno;
 }
 
@@ -282,10 +357,11 @@ Objetivo: inicializa o programa. deve ser chamado ao inicio do programa
 
 void inicializar()
 {
-    //printf("(INICIALIZAR CHAMADO)\n");
-    for (int i = 0; i < 10; i++) {
-        vetorPrincipal[i] = NULL;
-    } 
+    //printf("INICIALIZAR CHAMADO\n");
+    for (int i = 0; i < TAM; i++) {
+        vetorPrincipal[i].p = NULL;
+    }
+    //printf("INICIAR TERMINADO\n");
 }
 
 /*
@@ -296,18 +372,27 @@ para poder liberar todos os espaços de memória das estruturas auxiliares.
 
 void finalizar()
 {
-    //printf("(FINALIZAR CHAMADO)\n");
-    for (int i = 0; i < 10; i++) {
-        free(vetorPrincipal[i]);
-        vetorPrincipal[i] = NULL;
+    //printf("FINALIZAR CHAMADO\n");
+    for (int i = 0; i < TAM; i++) {
+        free(vetorPrincipal[i].p);
+        vetorPrincipal[i].p = NULL;
     }
 }
 
+// A funcao deve receber uma posicao valida
 int temEstruturaAuxiliar(int posicao) {
-    if (vetorPrincipal[posicao - 1] != NULL) {
+    if (vetorPrincipal[posicao - 1].p != NULL) {
         return JA_TEM_ESTRUTURA_AUXILIAR;
     } else {
         return SEM_ESTRUTURA_AUXILIAR;
     }
-    
+}
+
+// retorno: SEM_ESPACO, 
+int temEspacoEstruturaAux(int posicao) {
+    if (vetorPrincipal[posicao - 1].tam == vetorPrincipal[posicao - 1].qtd) {
+        return SEM_ESPACO;
+    } else {
+        return SUCESSO;
+    }
 }
