@@ -409,8 +409,28 @@ Retorno (No*)
 */
 No *montarListaEncadeadaComCabecote()
 {
+    // No.conteudo ; No.prox
+    int qtdElemt = getQuantidadeElementosTodasEstruturasAuxiliares();
+    No* head;
+    if (qtdElemt < 1) {
+        return NULL;
+    } else {
+        int todosElem[qtdElemt];
+        getDadosDeTodasEstruturasAuxiliares(todosElem);
 
-    return NULL;
+        head = (No *) malloc(sizeof(No));
+        head->conteudo = todosElem[0];
+        No* p;
+        No** ant = &(head->prox);
+        for (int i = 1; i < qtdElemt; i++) {
+            p = (No*) malloc(sizeof(No));
+            *ant = p;
+            p->conteudo = todosElem[i];
+            ant = &(p->prox);
+        }
+        *ant = NULL;
+    }
+    return head;
 }
 
 /*
@@ -419,6 +439,11 @@ Retorno void
 */
 void getDadosListaEncadeadaComCabecote(No *inicio, int vetorAux[])
 {
+    No* atual = inicio;
+    for (int i = 0; atual != NULL; i++) {
+        vetorAux[i] = atual->conteudo;
+        atual = atual->prox;
+    }
 }
 
 /*
@@ -430,6 +455,15 @@ Retorno
 */
 void destruirListaEncadeadaComCabecote(No **inicio)
 {
+    // inicio = endereço do ponteiro ; *inicio = Endereço referenciado pelo ponteiro ; **inicio = conteudo armazenado pelo ponteiro
+    No* prox = (*inicio)->prox; 
+    while (prox != NULL) {
+        free(*inicio);
+        *inicio = prox;
+        prox = (*inicio)->prox;
+    }
+    free(*inicio);
+    *inicio = NULL;
 }
 
 /*
