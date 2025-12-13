@@ -15,7 +15,9 @@ item vetorPrincipal[TAM];
 int ehPosicaoValida(int);
 int temEstruturaAuxiliar(int);
 int temEspacoEstruturaAux(int);
+void troca(int*, int*);
 void Ordenador(int[], int);
+int getQuantidadeElementosTodasEstruturasAuxiliares();
 
 /*
 Objetivo: criar estrutura auxiliar na posição 'posicao'.
@@ -113,6 +115,7 @@ Rertono (int)
 */
 int excluirNumeroDoFinaldaEstrutura(int posicao)
 {
+    //printf("EXCLUIR_FINAL CHAMADO:");
     int retorno = 0;
     int existeEstruturaAuxiliar = temEstruturaAuxiliar(posicao) == JA_TEM_ESTRUTURA_AUXILIAR;
     int temElemento = vetorPrincipal[posicao - 1].qtd;
@@ -240,6 +243,7 @@ int getDadosEstruturaAuxiliar(int posicao, int vetorAux[])
     } else {
         if (existeEstruturaAuxiliar) {
             int quantd = vetorPrincipal[posicao - 1].qtd;
+            //printf("(%i)", quantd);
             for (int i = 0; i < quantd; i++) {
                 vetorAux[i] = vetorPrincipal[posicao - 1].p[i];
             }
@@ -266,7 +270,7 @@ int getDadosOrdenadosEstruturaAuxiliar(int posicao, int vetorAux[])
     int retorno = 0;
     retorno = getDadosEstruturaAuxiliar(posicao, vetorAux);
     if (retorno == SUCESSO) {
-        Ordenador(vetorAux, vetorPrincipal[posicao - 1].tam);
+        Ordenador(vetorAux, vetorPrincipal[posicao - 1].qtd);
     }
     return retorno;
 }
@@ -287,9 +291,9 @@ int getDadosDeTodasEstruturasAuxiliares(int vetorAux[])
         getDadosEstruturaAuxiliar(i, &(vetorAux[iVetAux]));
         iVetAux += (vetorPrincipal[i - 1].p == NULL)? 0 : vetorPrincipal[i - 1].qtd;
     }
-    if (iVetAux == 0) {
-        retorno = TODAS_ESTRUTURAS_AUXILIARES_VAZIAS;
-    }
+    retorno = (iVetAux == 0)? TODAS_ESTRUTURAS_AUXILIARES_VAZIAS : SUCESSO;
+
+    //printf("todas estruturas chamado (%i)(%i)(%i)", vetorAux[0], vetorAux[1], vetorAux[2]);
 
     return retorno;
 }
@@ -305,6 +309,12 @@ Rertono (int)
 int getDadosOrdenadosDeTodasEstruturasAuxiliares(int vetorAux[])
 {
     int retorno = 0;
+    retorno = getDadosDeTodasEstruturasAuxiliares(vetorAux);
+    if (retorno == SUCESSO) {
+        int qtdElem = getQuantidadeElementosTodasEstruturasAuxiliares();
+        //printf("qtdElementTodasEstruturas: %i\n", qtdElem);
+        Ordenador(vetorAux, qtdElem);
+    }
 
     return retorno;
 }
@@ -322,7 +332,6 @@ Rertono (int)
 */
 int modificarTamanhoEstruturaAuxiliar(int posicao, int novoTamanho)
 {
-
     int retorno = 0;
     return retorno;
 }
@@ -338,8 +347,24 @@ Retorno (int)
 */
 int getQuantidadeElementosEstruturaAuxiliar(int posicao)
 {
-
     int retorno = 0;
+    int existeEstruturaAuxiliar = temEstruturaAuxiliar(posicao) == JA_TEM_ESTRUTURA_AUXILIAR;
+    int temElemento = vetorPrincipal[posicao - 1].qtd;
+    int posicao_invalida = ehPosicaoValida(posicao) == POSICAO_INVALIDA;
+
+    if (posicao_invalida) {
+        retorno = POSICAO_INVALIDA;
+    } else {
+        if (existeEstruturaAuxiliar) {
+            if (temElemento) {
+                retorno = vetorPrincipal[posicao - 1].qtd;
+            } else {
+                retorno = ESTRUTURA_AUXILIAR_VAZIA;
+            }
+        } else {
+            retorno = SEM_ESTRUTURA_AUXILIAR;
+        }
+    }
 
     return retorno;
 }
@@ -439,11 +464,25 @@ void troca(int* a, int* b) {
  */
 void Ordenador(int vetor[], int tam) {
     // bubble sort => O(n²)
-    for (int i = tam; i > 0; i--) {
-        for (int j = 0; j < (i - 1); j++) {
+    for (int i = tam - 1; i > 0; i--) {
+        for (int j = 0; j < i; j++) {
             if (vetor[j] > vetor[j + 1]) {
                 troca(&vetor[j], &vetor[j + 1]);
             }
         }
     }
 }
+
+int getQuantidadeElementosTodasEstruturasAuxiliares() {
+    int qtd = 0; 
+    
+    for (int i = 0, temp = 0; i < TAM; i++) {
+        temp = getQuantidadeElementosEstruturaAuxiliar(i + 1);
+        if (temp > 0) {
+            qtd += temp;
+        }
+    }
+
+    return (qtd == 0)? TODAS_ESTRUTURAS_AUXILIARES_VAZIAS : qtd;
+}
+
