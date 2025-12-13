@@ -333,6 +333,37 @@ Rertono (int)
 int modificarTamanhoEstruturaAuxiliar(int posicao, int novoTamanho)
 {
     int retorno = 0;
+
+    if (ehPosicaoValida(posicao) == POSICAO_INVALIDA) {
+        // se posição é um valor válido {entre 1 e 10}
+        retorno = POSICAO_INVALIDA;
+    } else if (temEstruturaAuxiliar(posicao) == SEM_ESTRUTURA_AUXILIAR) {
+        // a posicao pode não ter estrutura auxiliar
+        retorno = SEM_ESTRUTURA_AUXILIAR;
+    } else if ((novoTamanho + vetorPrincipal[posicao - 1].tam) < 1) {
+        // o tamanho nao pode ser menor que 1
+        retorno = NOVO_TAMANHO_INVALIDO;
+    } else {
+        int tamanho = vetorPrincipal[posicao - 1].tam;
+
+        int* novo_p = (int *) malloc((tamanho + novoTamanho) * sizeof(int));
+        if (novo_p == NULL) {
+            // o tamanho ser muito grande
+            retorno = SEM_ESPACO_DE_MEMORIA;
+        } else {
+            // deu tudo certo, crie
+            for (int i = 0; i < tamanho + novoTamanho; i++) {
+                novo_p[i] = vetorPrincipal[posicao - 1].p[i];
+            }
+            free(vetorPrincipal[posicao - 1].p);
+            vetorPrincipal[posicao - 1].p = novo_p;
+            vetorPrincipal[posicao - 1].tam = tamanho + novoTamanho;
+            vetorPrincipal[posicao - 1].qtd = (vetorPrincipal[posicao - 1].qtd > vetorPrincipal[posicao - 1].tam)? vetorPrincipal[posicao - 1].tam : vetorPrincipal[posicao - 1].qtd;
+            retorno = SUCESSO;
+            //printf("VP[%i] | (%i) => (%i)\n", posicao, tamanho, tamanho + novoTamanho);
+        }
+    }
+    //printf("retorno_modificar: %i\n", retorno);
     return retorno;
 }
 
@@ -443,7 +474,7 @@ int temEstruturaAuxiliar(int posicao) {
     }
 }
 
-// retorno: SEM_ESPACO, 
+// retorno: SEM_ESPACO, SUCESSO
 int temEspacoEstruturaAux(int posicao) {
     if (vetorPrincipal[posicao - 1].tam == vetorPrincipal[posicao - 1].qtd) {
         return SEM_ESPACO;
